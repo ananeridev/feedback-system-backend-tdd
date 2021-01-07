@@ -1,11 +1,11 @@
 package com.anabneri.feedbacksystem.repository;
 
-import com.anabneri.feedbacksystem.model.FeedbackEmployee;
+import com.anabneri.feedbacksystem.model.Employee;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface FeedbackRepository extends MongoRepository<FeedbackEmployee, String> {
+public interface FeedbackRepository extends MongoRepository<Employee, String> {
 
-    Optional<FeedbackEmployee> findByFeedbackId(Integer feedbackId);
+    Optional<Employee> findByFeedbackId(Integer feedbackId);
 }

@@ -1,9 +1,8 @@
 package com.anabneri.feedbacksystem.controller;
 
 import com.anabneri.feedbacksystem.model.EmployeeEntry;
-import com.anabneri.feedbacksystem.model.FeedbackEmployee;
+import com.anabneri.feedbacksystem.model.Employee;
 import com.anabneri.feedbacksystem.service.FeedbackService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,15 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Optional;
 import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.is;
@@ -29,7 +25,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(SpringExtension.class)
@@ -55,7 +50,7 @@ public class FeedbackControllerTest {
     @DisplayName("GET /feedback/feedbackId - THE FEEDBACK WAS FOUND")
     void testFeedbackByIdFound() throws Exception {
 
-        FeedbackEmployee mockEmployee = new FeedbackEmployee("1","Jacksson",1);
+        Employee mockEmployee = new Employee("1","Jacksson",1);
         Date now = new Date();
         mockEmployee.getEntries().add(new EmployeeEntry("joana_from_HR",now,
                 "Jacksson it's a great employee, very insightful"));
