@@ -9,7 +9,7 @@ import java.util.List;
 @Document(collection = "Employees")
 public class Employee {
 
-    private String employeeId;
+    private String feedbackId;
 
     private  String employeeName;
 
@@ -17,10 +17,10 @@ public class Employee {
 
     private List<EmployeeEntry> entries = new ArrayList<>();
 
-    public Employee(Integer employeeId) {}
+    public Employee(Integer feedbackId) {}
 
-    public String getEmployeeId() {
-        return employeeId;
+    public String getFeedbackId() {
+        return feedbackId;
     }
 
     public String getEmployeeName() {
@@ -35,8 +35,8 @@ public class Employee {
         return entries;
     }
 
-    public Employee(String employeeId, String employeeName, Integer feedbackVersion) {
-        this.employeeId = employeeId;
+    public Employee(String feedbackId, String employeeName, Integer feedbackVersion) {
+        this.feedbackId = feedbackId;
         this.employeeName = employeeName;
         this.feedbackVersion = feedbackVersion;
 

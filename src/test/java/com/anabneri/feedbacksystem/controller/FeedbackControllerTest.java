@@ -3,6 +3,7 @@ package com.anabneri.feedbacksystem.controller;
 import com.anabneri.feedbacksystem.model.EmployeeEntry;
 import com.anabneri.feedbacksystem.model.Employee;
 import com.anabneri.feedbacksystem.service.FeedbackService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,12 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.is;
@@ -25,7 +29,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -50,12 +55,26 @@ public class FeedbackControllerTest {
     @DisplayName("GET /feedback/feedbackId - THE FEEDBACK WAS FOUND")
     void testFeedbackByIdFound() throws Exception {
 
-        Employee mockEmployee = new Employee("1","Jacksson",1);
+        Employee mockEmployee = new Employee("feedbackId","Jacksson",1);
         Date now = new Date();
         mockEmployee.getEntries().add(new EmployeeEntry("joana_from_HR",now,
                 "Jacksson it's a great employee, very insightful"));
+        doReturn(Optional.of(mockEmployee)).when(service).findById("feedbackId");
 
+        mockMvc.perform(get("/feedback/{id}","feedbackId"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 
+                .andExpect(header().string(HttpHeaders.ETAG, "\"1\""))
+                .andExpect(header().string(HttpHeaders.LOCATION,"feedback/feedbackId"))
+
+                // validating the returned files
+                .andExpect(jsonPath("$.id",is("feedbackId")))
+                .andExpect(jsonPath("$.employeeName",is("Jacksson")))
+                .andExpect(jsonPath("$.entries.length()",is(1)))
+                .andExpect(jsonPath("$.entries[0].username", is("joana_from_HR")))
+                .andExpect(jsonPath("$.entries[0].feedback", is("Jacksson it's a great employee, very insightful")))
+                .andExpect(jsonPath("$.entries[0].date", is(df.format(now))));
 
     }
 
@@ -71,15 +90,12 @@ public class FeedbackControllerTest {
 
     }
 
-    @Test
-    @DisplayName("GET /feedback/{employeeId}/entry - FEEDBACK BY EMPLOYEE ENTRY")
-    void testFeedbackByIdFound() throws Exception {
 
-    }
-
-    @Test
-    @DisplayName("GET /feedback/{employeeId}/entry - FEEDBACK BY EMPLOYEE ENTRY")
-    void testFeedbackByIdFound() throws Exception {
-
+    static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
