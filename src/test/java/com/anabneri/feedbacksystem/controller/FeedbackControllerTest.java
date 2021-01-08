@@ -25,7 +25,7 @@ import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -93,7 +93,7 @@ public class FeedbackControllerTest {
 
         Date now = new Date();
         FeedbackEmployee postEmployee = new FeedbackEmployee(1);
-        postEmployee.getEntries().add( new EmployeeEntry("joana_from_HR",now,"Jacksson it's a great employee, very insightful"))
+        postEmployee.getEntries().add( new EmployeeEntry("joana_from_HR",now,"Jacksson it's a great employee, very insightful"));
 
         FeedbackEmployee mockEmployee = new FeedbackEmployee("feedbackId","Jacksson",1);
         mockEmployee.getEntries().add(new EmployeeEntry("joana_from_HR",now,
@@ -127,7 +127,8 @@ public class FeedbackControllerTest {
         FeedbackEmployee returnedEmployee = new FeedbackEmployee("1","Jacksson",2);
         returnedEmployee.getEntries().add(employeeEntry);
 
-        doReturn(Optional.of(mockEmployee)).when(service).findByFeedbackId(1);
+        doReturn(Optional.of(mockEmployee)).when(spy(service).findByFeedbackId(1));
+       // doReturn(Optional.of(mockEmployee)).when(service).findByFeedbackId(1);
 
         doReturn(Optional.of(returnedEmployee)).when(service).save(any());
 
@@ -144,7 +145,7 @@ public class FeedbackControllerTest {
                 .andExpect(jsonPath("$.employeeName",is("Jacksson")))
                 .andExpect(jsonPath("$.entries.length()",is(1)))
                 .andExpect(jsonPath("$.entries[0].username", is("joana_from_HR")))
-                .andExpect(jsonPath("$.entries[0].feedback", is("Jacksson it's a great employee, very insightful")))
+                .andExpect(jsonPath("$.entries[0].feedback", is("Jacksson it's a great employee, very insightful")));
     }
 
 
