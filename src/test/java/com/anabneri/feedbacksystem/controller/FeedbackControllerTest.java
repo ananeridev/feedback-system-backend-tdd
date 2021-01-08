@@ -66,7 +66,7 @@ public class FeedbackControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 
                 .andExpect(header().string(HttpHeaders.ETAG, "\"1\""))
-                .andExpect(header().string(HttpHeaders.LOCATION,"feedback/feedbackId"))
+                .andExpect(header().string(HttpHeaders.LOCATION,"/feedback/feedbackId"))
 
                 // validating the returned files
                 .andExpect(jsonPath("$.id",is("feedbackId")))
@@ -82,11 +82,14 @@ public class FeedbackControllerTest {
     @DisplayName("GET /feedback/feedbackId - THE FEEDBACK WAS NOT FOUND")
     void testFeedbackByIdNotFound() throws Exception {
 
+        doReturn(Optional.empty()).when(service).findById("feedbackId");
+        mockMvc.perform(get("/feedback/{id}","feedbackId"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("POST /feedback - SUCCESS")
-    void testFeedback() throws Exception {
+    void testCreateFeedback() throws Exception {
 
     }
 
