@@ -4,6 +4,6 @@ A system the I created to study TDD and incremeting to a backend for a feeback s
 
 ## Technolgie stack
 * SpringData
-* MongoData
+* MongoDB
 * Spy
 * SpringBoot 5
