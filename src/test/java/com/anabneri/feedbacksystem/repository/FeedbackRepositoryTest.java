@@ -32,8 +32,8 @@ public class FeedbackRepositoryTest {
     @MongoDataFile(value = "sample.json",classType = FeedbackEmployee.class, collectionName = "Employees")
     void testSave() {
 
-        FeedbackEmployee feedbackEmployee = new FeedbackEmployee("10","Jacksson",1);
-        feedbackEmployee.getEntries().add(new EmployeeEntry("girl-from-hr",new Date(),"this is a feedback :)"));
+        FeedbackEmployee feedbackEmployee = new FeedbackEmployee("10","user_test",1);
+        feedbackEmployee.getEntries().add(new EmployeeEntry("user_test",new Date(),"this is a feedback :)"));
 
         FeedbackEmployee savedFeedback = repository.save(feedbackEmployee);
 

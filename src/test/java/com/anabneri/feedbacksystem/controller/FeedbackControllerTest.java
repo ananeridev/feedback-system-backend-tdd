@@ -122,7 +122,7 @@ public class FeedbackControllerTest {
     void testAddEntryToFeedback() throws Exception {
 
         Date now = new Date();
-        EmployeeEntry employeeEntry = new EmployeeEntry("joana_from_HR",now,"Jacksson it's a great employee, very insightful");
+        EmployeeEntry employeeEntry = new EmployeeEntry("user_test",now,"Jacksson it's a great employee, very insightful");
         FeedbackEmployee mockEmployee = new FeedbackEmployee("1","Jacksson",1);
         FeedbackEmployee returnedEmployee = new FeedbackEmployee("1","Jacksson",2);
         returnedEmployee.getEntries().add(employeeEntry);
@@ -142,9 +142,9 @@ public class FeedbackControllerTest {
 
 
                 .andExpect(jsonPath("$.id",is("feedbackId")))
-                .andExpect(jsonPath("$.employeeName",is("Jacksson")))
+                .andExpect(jsonPath("$.employeeName",is("user_test")))
                 .andExpect(jsonPath("$.entries.length()",is(1)))
-                .andExpect(jsonPath("$.entries[0].username", is("joana_from_HR")))
+                .andExpect(jsonPath("$.entries[0].username", is("user_test")))
                 .andExpect(jsonPath("$.entries[0].feedback", is("Jacksson it's a great employee, very insightful")));
     }
 
