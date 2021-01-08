@@ -24,6 +24,17 @@ public class EmployeeEntry {
         this.feedback = feedback;
     }
 
+    public EmployeeEntry(String username, String feedback) {
+        this.username = username;
+        this.feedback = feedback;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+
+
     @Override
     public String toString() {
         return "EmployeeEntry{" +
