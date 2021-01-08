@@ -1,7 +1,7 @@
 package com.anabneri.feedbacksystem.controller;
 
 import com.anabneri.feedbacksystem.model.EmployeeEntry;
-import com.anabneri.feedbacksystem.model.Employee;
+import com.anabneri.feedbacksystem.model.FeedbackEmployee;
 import com.anabneri.feedbacksystem.service.FeedbackService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
@@ -55,7 +55,7 @@ public class FeedbackControllerTest {
     @DisplayName("GET /feedback/feedbackId - THE FEEDBACK WAS FOUND")
     void testFeedbackByIdFound() throws Exception {
 
-        Employee mockEmployee = new Employee("feedbackId","Jacksson",1);
+        FeedbackEmployee mockEmployee = new FeedbackEmployee("feedbackId","Jacksson",1);
         Date now = new Date();
         mockEmployee.getEntries().add(new EmployeeEntry("joana_from_HR",now,
                 "Jacksson it's a great employee, very insightful"));
@@ -91,6 +91,60 @@ public class FeedbackControllerTest {
     @DisplayName("POST /feedback - SUCCESS")
     void testCreateFeedback() throws Exception {
 
+        Date now = new Date();
+        FeedbackEmployee postEmployee = new FeedbackEmployee(1);
+        postEmployee.getEntries().add( new EmployeeEntry("joana_from_HR",now,"Jacksson it's a great employee, very insightful"))
+
+        FeedbackEmployee mockEmployee = new FeedbackEmployee("feedbackId","Jacksson",1);
+        mockEmployee.getEntries().add(new EmployeeEntry("joana_from_HR",now,
+                "Jacksson it's a great employee, very insightful"));
+
+        doReturn(Optional.of(mockEmployee)).when(service).save(any());
+
+        mockMvc.perform(get("/feedback/{id}","feedbackId"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(header().string(HttpHeaders.ETAG, "\"1\""))
+                .andExpect(header().string(HttpHeaders.LOCATION,"/feedback/feedbackId"))
+
+                // validating the returned files
+                .andExpect(jsonPath("$.id",is("feedbackId")))
+                .andExpect(jsonPath("$.employeeName",is("Jacksson")))
+                .andExpect(jsonPath("$.entries.length()",is(1)))
+                .andExpect(jsonPath("$.entries[0].username", is("joana_from_HR")))
+                .andExpect(jsonPath("$.entries[0].feedback", is("Jacksson it's a great employee, very insightful")))
+                .andExpect(jsonPath("$.entries[0].date", is(df.format(now))));
+    }
+
+    @Test
+    @DisplayName("POST /feedback/{feedbackId}/entry")
+    void testAddEntryToFeedback() throws Exception {
+
+        Date now = new Date();
+        EmployeeEntry employeeEntry = new EmployeeEntry("joana_from_HR",now,"Jacksson it's a great employee, very insightful");
+        FeedbackEmployee mockEmployee = new FeedbackEmployee("1","Jacksson",1);
+        FeedbackEmployee returnedEmployee = new FeedbackEmployee("1","Jacksson",2);
+        returnedEmployee.getEntries().add(employeeEntry);
+
+        doReturn(Optional.of(mockEmployee)).when(service).findByFeedbackId(1);
+
+        doReturn(Optional.of(returnedEmployee)).when(service).save(any());
+
+        mockMvc.perform(post("/feedback/{feedbackId}/entry",1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(employeeEntry)))
+
+                .andExpect(status().isOk())
+                .andExpect(header().string(HttpHeaders.ETAG, "\"2\""))
+                .andExpect(header().string(HttpHeaders.LOCATION, "/feedback/1"))
+
+
+                .andExpect(jsonPath("$.id",is("feedbackId")))
+                .andExpect(jsonPath("$.employeeName",is("Jacksson")))
+                .andExpect(jsonPath("$.entries.length()",is(1)))
+                .andExpect(jsonPath("$.entries[0].username", is("joana_from_HR")))
+                .andExpect(jsonPath("$.entries[0].feedback", is("Jacksson it's a great employee, very insightful")))
     }
 
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "Employees")
-public class Employee {
+public class FeedbackEmployee {
 
     private String feedbackId;
 
@@ -17,7 +17,7 @@ public class Employee {
 
     private List<EmployeeEntry> entries = new ArrayList<>();
 
-    public Employee(Integer feedbackId) {}
+    public FeedbackEmployee(Integer feedbackId) {}
 
     public String getFeedbackId() {
         return feedbackId;
@@ -35,7 +35,7 @@ public class Employee {
         return entries;
     }
 
-    public Employee(String feedbackId, String employeeName, Integer feedbackVersion) {
+    public FeedbackEmployee(String feedbackId, String employeeName, Integer feedbackVersion) {
         this.feedbackId = feedbackId;
         this.employeeName = employeeName;
         this.feedbackVersion = feedbackVersion;
