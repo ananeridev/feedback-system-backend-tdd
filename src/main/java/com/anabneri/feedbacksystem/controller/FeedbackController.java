@@ -46,7 +46,7 @@ public class FeedbackController {
     }
 
     @GetMapping("/feedback")
-    public Iterable<FeedbackEmployee> getFeedbacks(@RequestParam(value = "feedbackId", required = false) Optional<String> feedbackId) {
+    public Iterable<FeedbackEmployee> getFeedback(@RequestParam(value = "feedbackId", required = false) Optional<String> feedbackId) {
         return feedbackId.map(fid -> {
             return service.findByFeedbackId(Integer.valueOf(fid))
                     .map(Arrays::asList)

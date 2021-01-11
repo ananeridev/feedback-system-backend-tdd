@@ -51,7 +51,7 @@ public class FeedbackRepositoryTest {
     @AfterEach
     void afterEach() {
 
-        mongoTemplate.dropCollection("Feedback");
+        mongoTemplate.dropCollection("Feedback's");
     }
 
     @Test

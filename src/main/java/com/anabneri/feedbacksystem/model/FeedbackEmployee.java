@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "Feedback")
+@Document(collection = "Feedback's")
 public class FeedbackEmployee {
 
     private String id;

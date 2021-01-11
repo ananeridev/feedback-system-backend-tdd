@@ -30,11 +30,29 @@ public class EmployeeEntry {
         this.feedback = feedback;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
     public void setDate(Date date) {
         this.date = date;
     }
 
+    public String getFeedback() {
+        return feedback;
+    }
 
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
 
     @Override
     public String toString() {
