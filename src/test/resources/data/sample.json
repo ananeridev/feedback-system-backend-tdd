@@ -1,6 +1,7 @@
 [
   {
     "feedbackId": "1",
+    "employeeName": "user_test",
     "version": 1,
     "entries": [
       {"username" : "user_test", "date": "2018-11-10T11:38:26.855+0000", "feedback": "This is a feedback :)"}
@@ -8,6 +9,7 @@
   },
   {
     "feedbackId": "2",
+    "employeeName": "user_test",
     "version": 7,
     "entries": [
       {"username" : "user_test", "date": "2018-10-10T11:38:26.855+0000", "review": "This is a feedback :)"},

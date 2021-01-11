@@ -108,7 +108,6 @@ public class FeedbackControllerTest {
                 .andExpect(header().string(HttpHeaders.ETAG, "\"1\""))
                 .andExpect(header().string(HttpHeaders.LOCATION,"/feedback/feedbackId"))
 
-                // validating the returned files
                 .andExpect(jsonPath("$.id",is("feedbackId")))
                 .andExpect(jsonPath("$.employeeName",is("Jacksson")))
                 .andExpect(jsonPath("$.entries.length()",is(1)))

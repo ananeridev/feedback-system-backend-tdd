@@ -15,35 +15,34 @@ import java.util.Optional;
 
 public class MongoSpringExtension implements BeforeEachCallback, AfterEachCallback {
 
-    // path to where out test JSON files are stored
-    private static Path JSON_PATH = Paths.get("src", "test", "resources","data");
+    /**
+     * Path to where our test JSON files are stored.
+     */
+    private static Path JSON_PATH = Paths.get("src", "test", "resources", "data");
 
-    // jackson objectMapper: used to load a JSON file into a list of objects
+    /**
+     * Jackson ObjectMapper: used to load a JSON file into a list of objects
+     */
     private ObjectMapper mapper = new ObjectMapper();
 
     /**
      * Called before each test executes. This callback is responsible for importing the JSON document, defined
-     * by the MongoDataFile annotation, into the embedded MongoDB, thought the provided MongoTemplate
+     * by the MongoDataFile annotation, into the embedded MongoDB, through the provided MongoTemplate.
      *
-     * @param context   The ExtensionContext, which provides access to the test method.
-     * @throws Exception If an error occurs retrieving the test method or extracting the MongoDataFile annotation.
-     *
-     * */
+     * @param context       The ExtensionContext, which provides access to the test method.
+     * @throws Exception    If an error occurs retrieving the test method or extracting the MongoDataFile annotation.
+     */
     @Override
     public void beforeEach(ExtensionContext context) {
         context.getTestMethod().ifPresent(method -> {
-            // load test file from the annotation
+
             MongoDataFile mongoDataFile = method.getAnnotation(MongoDataFile.class);
 
-
-            // load the MongoTemplate that we can use to import our data
             getMongoTemplate(context).ifPresent(mongoTemplate -> {
                 try {
-                    // use jackson's objectmapper to load a list of objects from the JSON file
                     List objects = mapper.readValue(JSON_PATH.resolve(mongoDataFile.value()).toFile(),
                             mapper.getTypeFactory().constructCollectionType(List.class, mongoDataFile.classType()));
 
-                    // save each object into MongoDB
                     objects.forEach(mongoTemplate::save);
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
@@ -62,15 +61,13 @@ public class MongoSpringExtension implements BeforeEachCallback, AfterEachCallba
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
         context.getTestMethod().ifPresent(method -> {
-            // load the MongoDataFile annotation value from the test method
+
             MongoDataFile mongoDataFile = method.getAnnotation(MongoDataFile.class);
 
-            // load the MongoTemplate that we can use to drop the test class collection
             Optional<MongoTemplate> mongoTemplate = getMongoTemplate(context);
             mongoTemplate.ifPresent(t -> t.dropCollection(mongoDataFile.collectionName()));
         });
     }
-
 
     /**
      * Helper method that uses reflection to invoke the getMongoTemplate() method on the test instance.
@@ -79,16 +76,14 @@ public class MongoSpringExtension implements BeforeEachCallback, AfterEachCallba
      */
     private Optional<MongoTemplate> getMongoTemplate(ExtensionContext context) {
         Optional<Class<?>> clazz = context.getTestClass();
-        if(clazz.isPresent()) {
+        if (clazz.isPresent()) {
             Class<?> c = clazz.get();
             try {
-                // find the getMongoTemplate method on the test class
-                Method method = c.getMethod("getMongoTemplate",null);
+                Method method = c.getMethod("getMongoTemplate", null);
 
-                // invoke the getMongoTemplate method on the test class
                 Optional<Object> testInstance = context.getTestInstance();
                 if (testInstance.isPresent()) {
-                    return Optional.of((MongoTemplate)method.invoke(testInstance.get(),null));
+                    return Optional.of((MongoTemplate)method.invoke(testInstance.get(), null));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
