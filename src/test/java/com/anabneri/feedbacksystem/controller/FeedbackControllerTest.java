@@ -55,10 +55,10 @@ public class FeedbackControllerTest {
     @DisplayName("GET /feedback/feedbackId - THE FEEDBACK WAS FOUND")
     void testFeedbackByIdFound() throws Exception {
 
-        FeedbackEmployee mockEmployee = new FeedbackEmployee("feedbackId","Jacksson",1);
+        FeedbackEmployee mockEmployee = new FeedbackEmployee("feedbackId","user_test",1);
         Date now = new Date();
-        mockEmployee.getEntries().add(new EmployeeEntry("joana_from_HR",now,
-                "Jacksson it's a great employee, very insightful"));
+        mockEmployee.getEntries().add(new EmployeeEntry("user_test",now,
+                "This is a feedback :)"));
         doReturn(Optional.of(mockEmployee)).when(service).findById("feedbackId");
 
         mockMvc.perform(get("/feedback/{id}","feedbackId"))
@@ -70,10 +70,10 @@ public class FeedbackControllerTest {
 
                 // validating the returned files
                 .andExpect(jsonPath("$.id",is("feedbackId")))
-                .andExpect(jsonPath("$.employeeName",is("Jacksson")))
+                .andExpect(jsonPath("$.employeeName",is("user_test")))
                 .andExpect(jsonPath("$.entries.length()",is(1)))
-                .andExpect(jsonPath("$.entries[0].username", is("joana_from_HR")))
-                .andExpect(jsonPath("$.entries[0].feedback", is("Jacksson it's a great employee, very insightful")))
+                .andExpect(jsonPath("$.entries[0].username", is("user_test")))
+                .andExpect(jsonPath("$.entries[0].feedback", is("This is a feedback :)")))
                 .andExpect(jsonPath("$.entries[0].date", is(df.format(now))));
 
     }
@@ -93,11 +93,11 @@ public class FeedbackControllerTest {
 
         Date now = new Date();
         FeedbackEmployee postEmployee = new FeedbackEmployee(1);
-        postEmployee.getEntries().add( new EmployeeEntry("joana_from_HR",now,"Jacksson it's a great employee, very insightful"));
+        postEmployee.getEntries().add( new EmployeeEntry("user_test",now,"This is a feedback :)"));
 
-        FeedbackEmployee mockEmployee = new FeedbackEmployee("feedbackId","Jacksson",1);
-        mockEmployee.getEntries().add(new EmployeeEntry("joana_from_HR",now,
-                "Jacksson it's a great employee, very insightful"));
+        FeedbackEmployee mockEmployee = new FeedbackEmployee("1","user_test",1);
+        mockEmployee.getEntries().add(new EmployeeEntry("user_test",now,
+                "This is a feedback :)"));
 
         doReturn(Optional.of(mockEmployee)).when(service).save(any());
 
@@ -109,10 +109,10 @@ public class FeedbackControllerTest {
                 .andExpect(header().string(HttpHeaders.LOCATION,"/feedback/feedbackId"))
 
                 .andExpect(jsonPath("$.id",is("feedbackId")))
-                .andExpect(jsonPath("$.employeeName",is("Jacksson")))
+                .andExpect(jsonPath("$.employeeName",is("user_test")))
                 .andExpect(jsonPath("$.entries.length()",is(1)))
-                .andExpect(jsonPath("$.entries[0].username", is("joana_from_HR")))
-                .andExpect(jsonPath("$.entries[0].feedback", is("Jacksson it's a great employee, very insightful")))
+                .andExpect(jsonPath("$.entries[0].username", is("user_test")))
+                .andExpect(jsonPath("$.entries[0].feedback", is("This is a feedback :)")))
                 .andExpect(jsonPath("$.entries[0].date", is(df.format(now))));
     }
 
@@ -121,9 +121,9 @@ public class FeedbackControllerTest {
     void testAddEntryToFeedback() throws Exception {
 
         Date now = new Date();
-        EmployeeEntry employeeEntry = new EmployeeEntry("user_test",now,"Jacksson it's a great employee, very insightful");
-        FeedbackEmployee mockEmployee = new FeedbackEmployee("1","Jacksson",1);
-        FeedbackEmployee returnedEmployee = new FeedbackEmployee("1","Jacksson",2);
+        EmployeeEntry employeeEntry = new EmployeeEntry("user_test",now,"This is a feedback :");
+        FeedbackEmployee mockEmployee = new FeedbackEmployee("1","user_test",1);
+        FeedbackEmployee returnedEmployee = new FeedbackEmployee("1","user_test",2);
         returnedEmployee.getEntries().add(employeeEntry);
 
         doReturn(Optional.of(mockEmployee)).when(spy(service).findByFeedbackId(1));
@@ -144,8 +144,11 @@ public class FeedbackControllerTest {
                 .andExpect(jsonPath("$.employeeName",is("user_test")))
                 .andExpect(jsonPath("$.entries.length()",is(1)))
                 .andExpect(jsonPath("$.entries[0].username", is("user_test")))
-                .andExpect(jsonPath("$.entries[0].feedback", is("Jacksson it's a great employee, very insightful")));
+                .andExpect(jsonPath("$.entries[0].feedback", is("This is a feedback :)")))
+                .andExpect(jsonPath("$.entries[0].date", is(df.format(now))));
+
     }
+
 
 
     static String asJsonString(final Object obj) {
