@@ -45,7 +45,7 @@ public class FeedbackController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/feebacks")
+    @GetMapping("/feedback")
     public Iterable<FeedbackEmployee> getFeedbacks(@RequestParam(value = "feedbackId", required = false) Optional<String> feedbackId) {
         return feedbackId.map(fid -> {
             return service.findByFeedbackId(Integer.valueOf(fid))

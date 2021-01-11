@@ -35,6 +35,10 @@ public class FeedbackEmployee {
         return entries;
     }
 
+    public void setFeedbackVersion(Integer feedbackVersion) {
+        this.feedbackVersion = feedbackVersion;
+    }
+
     public FeedbackEmployee(String feedbackId, String employeeName, Integer feedbackVersion) {
         this.feedbackId = feedbackId;
         this.employeeName = employeeName;
