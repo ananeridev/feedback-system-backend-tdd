@@ -6,44 +6,64 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "Employees")
+@Document(collection = "Feedback")
 public class FeedbackEmployee {
 
-    private String feedbackId;
+    private String id;
 
-    private  String employeeName;
+    private  Integer feedbackId;
 
-    private Integer feedbackVersion;
+    private Integer feedbackVersion = 1;
 
     private List<EmployeeEntry> entries = new ArrayList<>();
 
-    public FeedbackEmployee(Integer feedbackId) {}
-
-    public String getFeedbackId() {
-        return feedbackId;
+    public FeedbackEmployee(Integer feedbackId) {
+        this.feedbackId = feedbackId;
     }
 
-    public String getEmployeeName() {
-        return employeeName;
+    public FeedbackEmployee(String id, Integer feedbackId, Integer version) {
+        this.id = id;
+        this.feedbackId = feedbackId;
+        this.feedbackVersion = feedbackVersion;
+    }
+
+    public FeedbackEmployee(Integer feedbackId, Integer version) {
+        this.feedbackId = feedbackId;
+        this.feedbackVersion = feedbackVersion;
+    }
+
+    public FeedbackEmployee(String id, Integer feedbackId) {
+        this.id = id;
+        this.feedbackId = feedbackId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Integer getFeedbackId() {
+        return feedbackId;
     }
 
     public Integer getFeedbackVersion() {
         return feedbackVersion;
     }
 
-    public List<EmployeeEntry> getEntries() {
-        return entries;
-    }
-
     public void setFeedbackVersion(Integer feedbackVersion) {
         this.feedbackVersion = feedbackVersion;
     }
 
-    public FeedbackEmployee(String feedbackId, String employeeName, Integer feedbackVersion) {
-        this.feedbackId = feedbackId;
-        this.employeeName = employeeName;
-        this.feedbackVersion = feedbackVersion;
+    public List<EmployeeEntry> getEntries() {
+        return entries;
+    }
 
-
+    @Override
+    public String toString() {
+        return "FeedbackEmployee{" +
+                "id='" + id + '\'' +
+                ", feedbackId=" + feedbackId +
+                ", feedbackVersion=" + feedbackVersion +
+                ", entries=" + entries +
+                '}';
     }
 }

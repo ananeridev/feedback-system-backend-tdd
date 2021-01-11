@@ -64,7 +64,6 @@ public class FeedbackController {
         logger.info("Saved Feedback: {}", newFeedback);
 
         try {
-            // Build a created response
             return ResponseEntity
                     .created(new URI("/feedback/" + newFeedback.getFeedbackId()))
                     .eTag(Integer.toString(newFeedback.getFeedbackVersion()))
@@ -108,7 +107,7 @@ public class FeedbackController {
         Optional<FeedbackEmployee> existingFeedback = service.findById(id);
 
         return existingFeedback.map(feedbackEmployee -> {
-            service.delete(feedbackEmployee.getFeedbackId());
+            service.delete(feedbackEmployee.getId());
             return ResponseEntity.ok().build();
         }).orElse(ResponseEntity.notFound().build());
 

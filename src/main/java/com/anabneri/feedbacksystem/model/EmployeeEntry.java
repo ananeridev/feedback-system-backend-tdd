@@ -16,7 +16,8 @@ public class EmployeeEntry {
     // the feedback content
     private String feedback;
 
-    public EmployeeEntry() {}
+    public EmployeeEntry() {
+    }
 
     public EmployeeEntry(String username, Date date, String feedback) {
         this.username = username;

@@ -32,15 +32,15 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public FeedbackEmployee save(FeedbackEmployee feedbackEmployee) {
-        feedbackEmployee.setFeedbackVersion(1);
-        return repository.save(feedbackEmployee);
+    public FeedbackEmployee save(FeedbackEmployee feedback) {
+        feedback.setFeedbackVersion(1);
+        return repository.save(feedback);
     }
 
     @Override
-    public FeedbackEmployee update(FeedbackEmployee feedbackEmployee) {
-        feedbackEmployee.setFeedbackVersion(feedbackEmployee.getFeedbackVersion()+1);
-        return repository.save(feedbackEmployee);
+    public FeedbackEmployee update(FeedbackEmployee feedback) {
+        feedback.setFeedbackVersion(feedback.getFeedbackVersion()+1);
+        return repository.save(feedback);
     }
 
     @Override
@@ -48,3 +48,4 @@ public class FeedbackServiceImpl implements FeedbackService {
         repository.deleteById(id);
     }
 }
+

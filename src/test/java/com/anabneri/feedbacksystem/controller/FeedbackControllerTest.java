@@ -52,86 +52,88 @@ public class FeedbackControllerTest {
     }
 
     @Test
-    @DisplayName("GET /feedback/feedbackId - THE FEEDBACK WAS FOUND")
-    void testFeedbackByIdFound() throws Exception {
+    @DisplayName("GET /feedback/feedbackId - Found")
+    void testGetFeedbackById() throws Exception {
 
-        FeedbackEmployee mockEmployee = new FeedbackEmployee("feedbackId","user_test",1);
+        FeedbackEmployee mockFeedback = new FeedbackEmployee("feedbackId", 1, 1);
         Date now = new Date();
-        mockEmployee.getEntries().add(new EmployeeEntry("user_test",now,
-                "This is a feedback :)"));
-        doReturn(Optional.of(mockEmployee)).when(service).findById("feedbackId");
+        mockFeedback.getEntries().add(new EmployeeEntry("test-user", now, "Great employee"));
+        doReturn(Optional.of(mockFeedback)).when(service).findById("feedbackId");
 
-        mockMvc.perform(get("/feedback/{id}","feedbackId"))
+        mockMvc.perform(get("/feedback/{id}", "feedbackId"))
+
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 
                 .andExpect(header().string(HttpHeaders.ETAG, "\"1\""))
-                .andExpect(header().string(HttpHeaders.LOCATION,"/feedback/feedbackId"))
+                .andExpect(header().string(HttpHeaders.LOCATION, "/feedback/feedbackId"))
 
-                // validating the returned files
-                .andExpect(jsonPath("$.id",is("feedbackId")))
-                .andExpect(jsonPath("$.employeeName",is("user_test")))
-                .andExpect(jsonPath("$.entries.length()",is(1)))
-                .andExpect(jsonPath("$.entries[0].username", is("user_test")))
-                .andExpect(jsonPath("$.entries[0].feedback", is("This is a feedback :)")))
+
+                .andExpect(jsonPath("$.id", is("feedbackId")))
+                .andExpect(jsonPath("$.feedbackId", is(1)))
+                .andExpect(jsonPath("$.entries.length()", is(1)))
+                .andExpect(jsonPath("$.entries[0].username", is("test-user")))
+                .andExpect(jsonPath("$.entries[0].feedback", is("Great employee")))
                 .andExpect(jsonPath("$.entries[0].date", is(df.format(now))));
-
     }
 
     @Test
-    @DisplayName("GET /feedback/feedbackId - THE FEEDBACK WAS NOT FOUND")
-    void testFeedbackByIdNotFound() throws Exception {
+    @DisplayName("GET /feedback/feedbackId - Not Found")
+    void testGetFeedbackByIdNotFound() throws Exception {
 
         doReturn(Optional.empty()).when(service).findById("feedbackId");
-        mockMvc.perform(get("/feedback/{id}","feedbackId"))
+
+        mockMvc.perform(get("/feedback/{id}", "feedbackId"))
+
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("POST /feedback - SUCCESS")
+    @DisplayName("POST /feedback - Success")
     void testCreateFeedback() throws Exception {
 
         Date now = new Date();
-        FeedbackEmployee postEmployee = new FeedbackEmployee(1);
-        postEmployee.getEntries().add( new EmployeeEntry("user_test",now,"This is a feedback :)"));
+        FeedbackEmployee postFeedback = new FeedbackEmployee(1);
+        postFeedback.getEntries().add(new EmployeeEntry("test-user", now, "Great employee"));
 
-        FeedbackEmployee mockEmployee = new FeedbackEmployee("1","user_test",1);
-        mockEmployee.getEntries().add(new EmployeeEntry("user_test",now,
-                "This is a feedback :)"));
+        FeedbackEmployee mockFeedback = new FeedbackEmployee("feedbackId", 1, 1);
+        mockFeedback.getEntries().add(new EmployeeEntry("test-user", now, "Great employee"));
 
-        doReturn(Optional.of(mockEmployee)).when(service).save(any());
+        doReturn(mockFeedback).when(service).save(any());
 
-        mockMvc.perform(get("/feedback/{id}","feedbackId"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/feedback")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(mockFeedback)))
+
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 
                 .andExpect(header().string(HttpHeaders.ETAG, "\"1\""))
-                .andExpect(header().string(HttpHeaders.LOCATION,"/feedback/feedbackId"))
+                .andExpect(header().string(HttpHeaders.LOCATION, "/feedback/feedbackId"))
 
-                .andExpect(jsonPath("$.id",is("feedbackId")))
-                .andExpect(jsonPath("$.employeeName",is("user_test")))
-                .andExpect(jsonPath("$.entries.length()",is(1)))
-                .andExpect(jsonPath("$.entries[0].username", is("user_test")))
-                .andExpect(jsonPath("$.entries[0].feedback", is("This is a feedback :)")))
+                .andExpect(jsonPath("$.id", is("feedbackId")))
+                .andExpect(jsonPath("$.feedbackId", is(1)))
+                .andExpect(jsonPath("$.entries.length()", is(1)))
+                .andExpect(jsonPath("$.entries[0].username", is("test-user")))
+                .andExpect(jsonPath("$.entries[0].feedback", is("Great employee")))
                 .andExpect(jsonPath("$.entries[0].date", is(df.format(now))));
     }
 
     @Test
     @DisplayName("POST /feedback/{feedbackId}/entry")
-    void testAddEntryToFeedback() throws Exception {
-
+    void testAddEntryToReview() throws Exception {
+        // Setup mocked service
         Date now = new Date();
-        EmployeeEntry employeeEntry = new EmployeeEntry("user_test",now,"This is a feedback :");
-        FeedbackEmployee mockEmployee = new FeedbackEmployee("1","user_test",1);
-        FeedbackEmployee returnedEmployee = new FeedbackEmployee("1","user_test",2);
-        returnedEmployee.getEntries().add(employeeEntry);
+        EmployeeEntry employeeEntry = new EmployeeEntry("test-user", now, "Great employee");
+        FeedbackEmployee mockFeedback = new FeedbackEmployee("1", 1, 1);
+        FeedbackEmployee returnedFeedback = new FeedbackEmployee("1", 1, 2);
+        returnedFeedback.getEntries().add(employeeEntry);
 
-        doReturn(Optional.of(mockEmployee)).when(spy(service).findByFeedbackId(1));
-       // doReturn(Optional.of(mockEmployee)).when(service).findByFeedbackId(1);
+        doReturn(Optional.of(mockFeedback)).when(service).findByFeedbackId(1);
 
-        doReturn(Optional.of(returnedEmployee)).when(service).save(any());
+        doReturn(mockFeedback).when(service).save(any());
 
-        mockMvc.perform(post("/feedback/{feedbackId}/entry",1)
+        mockMvc.perform(post("/feedback/{feedbackId}/entry", 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(employeeEntry)))
 
@@ -139,16 +141,12 @@ public class FeedbackControllerTest {
                 .andExpect(header().string(HttpHeaders.ETAG, "\"2\""))
                 .andExpect(header().string(HttpHeaders.LOCATION, "/feedback/1"))
 
-
-                .andExpect(jsonPath("$.id",is("feedbackId")))
-                .andExpect(jsonPath("$.employeeName",is("user_test")))
-                .andExpect(jsonPath("$.entries.length()",is(1)))
-                .andExpect(jsonPath("$.entries[0].username", is("user_test")))
-                .andExpect(jsonPath("$.entries[0].feedback", is("This is a feedback :)")))
-                .andExpect(jsonPath("$.entries[0].date", is(df.format(now))));
-
+                .andExpect(jsonPath("$.id", is("feedbackId")))
+                .andExpect(jsonPath("$.feedbackId", is(1)))
+                .andExpect(jsonPath("$.entries.length()", is(1)))
+                .andExpect(jsonPath("$.entries[0].username", is("test-user")))
+                .andExpect(jsonPath("$.entries[0].feedback", is("Great employee")));
     }
-
 
 
     static String asJsonString(final Object obj) {
