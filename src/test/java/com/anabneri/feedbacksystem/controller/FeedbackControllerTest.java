@@ -63,7 +63,7 @@ public class FeedbackControllerTest {
         mockMvc.perform(get("/feedback/{id}", "feedbackId"))
 
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 
                 .andExpect(header().string(HttpHeaders.ETAG, "\"1\""))
                 .andExpect(header().string(HttpHeaders.LOCATION, "/feedback/feedbackId"))
@@ -106,7 +106,7 @@ public class FeedbackControllerTest {
                 .content(asJsonString(mockFeedback)))
 
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 
                 .andExpect(header().string(HttpHeaders.ETAG, "\"1\""))
                 .andExpect(header().string(HttpHeaders.LOCATION, "/feedback/feedbackId"))
